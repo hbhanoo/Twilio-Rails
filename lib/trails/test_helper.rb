@@ -1,11 +1,16 @@
 require 'ostruct'
 
-module Twilio
+module Trails
   module TestHelper
     def open_session_as_twilio( as_twilio_opts = {}, *args )
       session = open_session( *args )
       modify_session_with_twilio_opts( session, as_twilio_opts )
       session
+    end
+
+    def as_twilio_sms( twilio_opts = {}, &block )
+      twilio_opts[:sms] = true
+      as_twilio( twilio_opts, &block )
     end
 
     def as_twilio( as_twilio_opts = {}, &block )
@@ -48,6 +53,16 @@ module Twilio
       block.call()
 
     end # as_twilio
+    
+    # message defaults to @response.body
+    def assert_length_of_sms( message = nil )
+      message ||= @response.body
+      assert_block( build_message( "SMS should have been no longer than ? characters, but was ? characters.", 
+                                   Trails::Twilio::Account::MAX_SMS_LENGTH, message.size ) ) {
+        message.size <= Trails::Twilio::Account::MAX_SMS_LENGTH 
+      }
+    end
+
 
     def user_presses( digits )
       { 'Digits' => digits }
@@ -88,8 +103,11 @@ module Twilio
     def modify_params_with_twilio_opts( params, as_twilio_opts )
       caller = as_twilio_opts[:caller] || '4155551212'
       called = as_twilio_opts[:called] || '6155556161'
+      from = as_twilio_opts[:from] || '6665554321'
       params['Caller'] = caller
       params['Called'] = called
+      params['From'] = from
+      params['SmsMessageSid'] = 'DummyMessageSid' if( as_twilio_opts[:sms] )
     end
 
     private
@@ -97,14 +115,15 @@ module Twilio
     end
 
   end # module TestHelper
-end # module Twilio
+end # module Trails
 
+# open up the TwilioRest::Account class so that we can keep track of faked requests
 class TwilioRest::Account
+  @@fake_requests ||= []
   def self.faked_requests
     return @@fake_requests
   end
   def request_with_fake( url, method, params )
-    @@fake_requests ||= []
     @@fake_requests.push( OpenStruct.new( :url => url, :method => method, :params => params ) )
     fake_response = OpenStruct.new
     fake_response.body = 'Fake Body'
@@ -112,6 +131,3 @@ class TwilioRest::Account
   end
   alias_method_chain :request, :fake
 end
-
-
-

@@ -1,0 +1,37 @@
+=== 1.1.1 / 2010-03-16
+
+Typo fix.
+
+=== 1.1.0 / 2010-03-14
+
+Twilio's SMS API has changed since the beta release (no url specified for handling sms responses).
+* Update the send_sms call to reflect that (backwards-incompatible change)
+* Start cleaning up the documentation a bit.
+
+=== 1.0.5 / 2010-03-06
+
+* Ugh. accidentally released with unchecked-in code. undoing.
+
+=== 1.0.4 / 2010-03-06
+
+* Clean up logging a bit
+
+=== 1.0.3 / 2010-03-06
+
+* Fix Manifest so all required files get added (!)
+
+=== 1.0.2 / 2010-02-06
+
+* Add support for default twiml layout
+* Add example and tests
+
+=== 1.0.1 / 2010-02-06
+
+* Fix basic errors; still no tests :(
+
+=== 1.0.0 / 2010-02-05
+
+* 1 major enhancement
+
+  * Birthday!
+
