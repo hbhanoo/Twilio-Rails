@@ -104,9 +104,11 @@ module Trails
       caller = as_twilio_opts[:caller] || '4155551212'
       called = as_twilio_opts[:called] || '6155556161'
       from = as_twilio_opts[:from] || '6665554321'
+      to = as_twilio_opts[:to] || '3334445678'
       params['Caller'] = caller
       params['Called'] = called
       params['From'] = from
+      params['To'] = to
       params['SmsMessageSid'] = 'DummyMessageSid' if( as_twilio_opts[:sms] )
     end
 

@@ -14,7 +14,7 @@ Support for SMS, twiml MimeType alias, functional test helpers.
 
  class ApplicationController < ActionController::Base
  ..
-	include Twilio::CallHandling
+	include Trails::Twilio::CallHandling
  ..
  end
 
