@@ -8,7 +8,7 @@ module Trails
       end
 
       def twilio_data
-        @twilio_data ||= request.params.slice( INCOMING_VARS ).dup
+        request.params.slice( *INCOMING_VARS ).dup
       end
 
       def is_sms?
@@ -47,7 +47,7 @@ module Trails
                        'To',             #
                        'Body',           # 160 chars
 
-                      ]
+                      ].freeze
       public
       INCOMING_VARS.uniq.each do |pname|
         mname = pname.gsub( /[A-Z]/ ) { |s| "_#{s.downcase}" }.gsub( /^_/, '' )
