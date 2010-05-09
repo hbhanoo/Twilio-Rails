@@ -178,7 +178,15 @@ module Trails
         return @logger
       end
       def self.config
-        @@cfg ||= YAML::load_file( config_file )
+        @@all_cfg ||= YAML::load_file( config_file ).freeze
+        # allow per-environment configuration
+        @@cfg ||= if ( @@all_cfg.has_key?( RAILS_ENV ) ) 
+                    @@all_cfg[ RAILS_ENV ] 
+                  elsif( @@all_cfg.has_key?( 'default' ) )
+                    @@all_cfg['default']
+                  else
+                    @@all_cfg
+                  end
       end
 
       def self.config_file
