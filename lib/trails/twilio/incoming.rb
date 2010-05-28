@@ -15,6 +15,10 @@ module Trails
         !sms_message_sid.blank?
       end
 
+      def complete?
+        'completed' == self.call_status.downcase
+      end
+
       protected
       attr_reader :request
 
