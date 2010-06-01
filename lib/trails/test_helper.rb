@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'securerandom'
 
 module Trails
   module TestHelper
@@ -109,6 +110,7 @@ module Trails
       params['Called'] = called
       params['From'] = from
       params['To'] = to
+      params['CallGuid'] = 'CA_FAKE_' + SecureRandom.hex( 12 )
       params['SmsMessageSid'] = 'DummyMessageSid' if( as_twilio_opts[:sms] )
     end
 
