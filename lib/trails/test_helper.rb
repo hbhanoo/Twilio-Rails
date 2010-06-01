@@ -106,10 +106,12 @@ module Trails
       called = as_twilio_opts[:called] || '6155556161'
       from = as_twilio_opts[:from] || '6665554321'
       to = as_twilio_opts[:to] || '3334445678'
+      status = as_twilio_opts[:call_status] || 'in-progress'
       params['Caller'] = caller
       params['Called'] = called
       params['From'] = from
       params['To'] = to
+      params['CallStatus'] = status
       params['CallGuid'] = 'CA_FAKE_' + SecureRandom.hex( 12 )
       params['SmsMessageSid'] = 'DummyMessageSid' if( as_twilio_opts[:sms] )
     end
