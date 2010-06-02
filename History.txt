@@ -1,3 +1,7 @@
+=== 1.1.5 / 2010-06-02
+
+* test support for call guid/call status
+
 === 1.1.4 / 2010-05-09
 
 Backwards-compatible support for environment-specific twilio configuration
