@@ -101,15 +101,18 @@ module Trails
     end
 
     def modify_params_with_twilio_opts( params, as_twilio_opts )
-      caller = as_twilio_opts[:caller] || '4155551212'
-      called = as_twilio_opts[:called] || '6155556161'
-      from = as_twilio_opts[:from] || '6665554321'
-      to = as_twilio_opts[:to] || '3334445678'
-      params['Caller'] = caller
-      params['Called'] = called
-      params['From'] = from
-      params['To'] = to
-      params['SmsMessageSid'] = 'DummyMessageSid' if( as_twilio_opts[:sms] )
+      options = as_twilio_opts.dup
+      
+      options[ 'Caller' ] = options.delete(:caller) || '4155551212'
+      options[ 'Called' ] = options.delete(:called) || '6155556161'
+      options[ 'From' ]   = options.delete(:from) || '6665554321'
+      options[ 'To' ]     = options.delete(:to) || '3334445678'
+      options['SmsMessageSid'] = 'DummyMessageSid' if( options[:sms] )
+
+      valid_options = Hash[ *( options.select{ |k,v| 
+                                 Trails::Twilio::Incoming.const_get( 'INCOMING_VARS' ).
+                                   include?( k ) }.flatten ) ]
+      params.merge!( valid_options )
     end
 
     private
