@@ -1,3 +1,7 @@
+=== 1.1.4 / 2011-02-19
+
+Various updates based on latest twilio docs
+
 === 1.1.1 / 2010-03-16
 
 Typo fix.
