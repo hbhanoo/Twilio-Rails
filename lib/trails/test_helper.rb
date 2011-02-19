@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'securerandom'
 
 module Trails
   module TestHelper
@@ -78,12 +79,15 @@ module Trails
       header_modifier = lambda{ |h,o| modify_headers_with_twilio_opts( h, o ) }
       param_modifier = lambda{ |p,o| modify_params_with_twilio_opts( p, o ) }
 
+      session_twilio_opts = as_twilio_opts.dup
+      session_twilio_opts[:call_guid] ||= generate_call_guid
+
       session.metaclass.send( :define_method, :process_with_twilio_as_caller ) do |method, path, params, headers|
         params ||= {}
         headers ||= {}
 
-        header_modifier.call( headers, as_twilio_opts )
-        param_modifier.call( params, as_twilio_opts )
+        header_modifier.call( headers, session_twilio_opts )
+        param_modifier.call( params, session_twilio_opts )
 
         process_without_twilio_as_caller( method, path, params, headers )
       end # define process_with_twilio_as_caller
@@ -101,22 +105,27 @@ module Trails
     end
 
     def modify_params_with_twilio_opts( params, as_twilio_opts )
-      options = as_twilio_opts.dup
-      
-      options[ 'Caller' ] = options.delete(:caller) || '4155551212'
-      options[ 'Called' ] = options.delete(:called) || '6155556161'
-      options[ 'From' ]   = options.delete(:from) || '6665554321'
-      options[ 'To' ]     = options.delete(:to) || '3334445678'
-      options['SmsMessageSid'] = 'DummyMessageSid' if( options[:sms] )
-
-      valid_options = Hash[ *( options.select{ |k,v| 
-                                 Trails::Twilio::Incoming.const_get( 'INCOMING_VARS' ).
-                                   include?( k ) }.flatten ) ]
-      params.merge!( valid_options )
+      caller = as_twilio_opts[:caller] || '4155551212'
+      called = as_twilio_opts[:called] || '6155556161'
+      from = as_twilio_opts[:from] || '6665554321'
+      to = as_twilio_opts[:to] || '3334445678'
+      status = as_twilio_opts[:call_status] || 'in-progress'
+      guid = as_twilio_opts[ :call_guid ] || generate_call_guid
+      params['Caller'] = caller
+      params['Called'] = called
+      params['From'] = from
+      params['To'] = to
+      params['CallStatus'] ||= status
+      params['CallGuid'] ||= guid
+      params['SmsMessageSid'] = 'DummyMessageSid' if( as_twilio_opts[:sms] )
     end
 
     private
     module IntegrationDSL
+    end
+
+    def generate_call_guid
+      'CA_FAKE_' + SecureRandom.hex( 12 )
     end
 
   end # module TestHelper

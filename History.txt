@@ -1,6 +1,10 @@
-=== 1.1.4 / 2011-02-19
+=== 1.1.5 / 2010-06-02
 
-Various updates based on latest twilio docs
+* test support for call guid/call status
+
+=== 1.1.4 / 2010-05-09
+
+Backwards-compatible support for environment-specific twilio configuration
 
 === 1.1.1 / 2010-03-16
 
